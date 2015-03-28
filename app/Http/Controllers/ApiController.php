@@ -1,6 +1,5 @@
 <?php namespace App\Http\Controllers;
 use Response;
-use Validator;
 
 class ApiController extends Controller {
 

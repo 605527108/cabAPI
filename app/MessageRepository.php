@@ -2,9 +2,9 @@
 
 class MessageRepository{
 
-    public function save($userId,$messageToSend)
+    public function save($user,$messageToSend)
     {
-        return User::findOrFail($userId)->messages()->save($messageToSend);    
+        return $user->messages()->save(Message::create($messageToSend));    
     }
     
 

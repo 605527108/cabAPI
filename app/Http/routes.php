@@ -21,8 +21,9 @@ Route::controllers([
 ]);
 
 Route::group(['prefix' => 'api/v1','middleware'=>'auth.basic'],function(){
-    Route::resource('taxis','TaxisController');
-    Route::resource('sendable','SendableController');
-    Route::resource('message','MessageController');
+    Route::get('taxis/{id}','TaxisController@show');
+    Route::post('sendable/store','SendableController@store');
+    Route::get('message/','MessageController@index');
+    Route::post('message/send','MessageController@store');
 });
 

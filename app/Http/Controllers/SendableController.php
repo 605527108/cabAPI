@@ -1,9 +1,11 @@
 <?php namespace App\Http\Controllers;
 
+use Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Validator;
 use Illuminate\Http\Request;
+use App\Commands\SetReceiver;
 
 class SendableController extends ApiController {
 
@@ -32,13 +34,19 @@ class SendableController extends ApiController {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		$userPhoneToSend = Input::get('userPhoneToSend');
-        if(!$userPhoneToSend)
-        {
+	    $validator = Validator::make($request->all(), [
+			'userPhoneToSend' => 'required'
+		]);
+
+		if($validator->fails())
+        {	    
             return $this->setStatusCode(422)->respondWithError('Parameter failed validation');
         }
+        
+		$userPhoneToSend = $request->input('userPhoneToSend');
+        
         $this->dispatch(
             new SetReceiver(Auth::user(),$userPhoneToSend)
         );

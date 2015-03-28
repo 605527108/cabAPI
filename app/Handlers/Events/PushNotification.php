@@ -6,15 +6,15 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldBeQueued;
 
 class PushNotification {
-
+    protected $messageRepository;
 	/**
 	 * Create the event handler.
 	 *
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct(MessageRepository $messageRepository)
 	{
-		//
+		$this->messageRepository = $messageRepository;
 	}
 
 	/**
@@ -26,7 +26,11 @@ class PushNotification {
 	public function handle(MessageWasSended $event)
 	{
 	    //Still to improve
-		MessageRepository::save($event->userId,$event->messageToSend);
+		$result = $this->messageRepository->save($event->user,$event->messageToSend);
+		if(!$result)
+		{
+		    dd('Can not insert into database');
+		}
 	}
 
 }

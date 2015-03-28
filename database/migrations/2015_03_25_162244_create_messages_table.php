@@ -16,7 +16,7 @@ class CreateMessagesTable extends Migration {
 		{
 			$table->increments('id');
             $table->integer('user_id');
-            $table->integer('taxi_id');
+            $table->string('taxi_id');
             $table->float('latitude');
             $table->float('longitude');
 			$table->timestamps();

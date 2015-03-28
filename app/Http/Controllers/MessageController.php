@@ -1,13 +1,21 @@
 <?php namespace App\Http\Controllers;
-
+use Event;
+use App\Events\MessageWasSended;
+use Auth;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\MessageRepository;
-
+use Validator;
 use Illuminate\Http\Request;
 
 class MessageController extends ApiController {
 
+    protected $messageRepository;
+    
+    function __construct(MessageRepository $messageRepository)
+        {
+            $this->messageRepository = $messageRepository;
+        }
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -16,16 +24,18 @@ class MessageController extends ApiController {
 	public function index()
 	{
 		//
-		$response = MessageRepository::getAllMessagesForUser(Auth::user());
+		$response = $this->messageRepository->getAllMessagesForUser(Auth::user());
 		
         if(!$response)
         {
             return $this->respondNotFound('No message');
         }
-        
+        /*
         return $this->respond([
             'data' => $response->toArray()
         ]);
+         */
+        return $this->respond($response->toArray());
 	}
 
 	/**
@@ -46,8 +56,10 @@ class MessageController extends ApiController {
 	public function store(Request $request)
 	{
 
-		$validator = Validator::make($request, [
-			'taxi_id' => 'required'
+		$validator = Validator::make($request->all(), [
+			'taxi_id' => 'required',
+			'latitude' => 'required',
+			'longitude' => 'required'
 		]);
 
 		if($validator->fails())
@@ -55,13 +67,16 @@ class MessageController extends ApiController {
             return $this->setStatusCode(422)->respondWithError('Parameter failed validation');
         }
         
-        $messageToSend = $request->all();
+        $messageToSend = $request->only('taxi_id','latitude','longitude');
         $response = Event::fire(new MessageWasSended(Auth::user(),$messageToSend));
+        /*
         if(!$response)
         {
             return $this->setStatusCode(422)->respondWithError('Failed to send message');
         }
+        */
         return $this->respondCreated('Successfully sended');
+        
 	}
 
 	/**

@@ -8,15 +8,15 @@ class MessageWasSended extends Event {
 
 	use SerializesModels;
 	
-	protected $userId;
-	protected $messageToSend;
+	public $user;
+	public $messageToSend;
 
 	/**
 	 * Create a new event instance.
 	 *
 	 * @return void
 	 */
-	public function __construct($userId,$messageToSend)
+	public function __construct($user,$messageToSend)
 	{
 		//
 		$this->user = $user;

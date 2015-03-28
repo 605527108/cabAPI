@@ -1,12 +1,12 @@
 <?php namespace App\Commands;
 
 use App\Commands\Command;
-
+use App\UserRepository;
 use Illuminate\Contracts\Bus\SelfHandling;
 
 class SetReceiver extends Command implements SelfHandling {
 
-    private $userId;
+    private $user;
     private $userPhonetoSend;
 
 	/**
@@ -14,10 +14,10 @@ class SetReceiver extends Command implements SelfHandling {
 	 *
 	 * @return void
 	 */
-	public function __construct($userId,$userPhoneToSend)
+	public function __construct($user,$userPhoneToSend)
 	{
 		//
-        $this->userId = $userId;
+        $this->user = $user;
         $this->userPhoneToSend = $userPhoneToSend;
 	}
 
@@ -30,9 +30,8 @@ class SetReceiver extends Command implements SelfHandling {
 	{
 		//
         $userRepo = new UserRepository;
-        $user = $userRepo->findById($this->userId);
         $userIdToSend = $userRepo->findByPhone($this->userPhoneToSend)->id;
-        $userRepo->setReceiver($userIdToSend,$user);
+        $userRepo->setReceiver($userIdToSend,$this->user);
 	}
 
 }

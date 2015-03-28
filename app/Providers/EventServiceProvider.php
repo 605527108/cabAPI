@@ -1,5 +1,5 @@
 <?php namespace App\Providers;
-
+use Event;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -11,11 +11,9 @@ class EventServiceProvider extends ServiceProvider {
 	 * @var array
 	 */
 	protected $listen = [
-		//'event.name' => [
-		//	'EventListener',
-		//],
-        'App\Events\MessageWasSended' => [
-                    'App\Handlers\Events\PushNotification',
+		
+        App\Events\MessageWasSended::class => [
+            App\Handlers\Events\PushNotification::class,
         ],
 	];
 
@@ -28,7 +26,7 @@ class EventServiceProvider extends ServiceProvider {
 	public function boot(DispatcherContract $events)
 	{
 		parent::boot($events);
-
+        Event::listen('App\Events\MessageWasSended','App\Handlers\Events\PushNotification');
 		//
 	}
 
